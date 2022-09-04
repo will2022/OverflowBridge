@@ -1,0 +1,41 @@
+{
+  "name": "overflowbridge",
+  "version": "1.0.0",
+  "description": "A bridge between Discord and Minecraft Servers coded in TypeScript.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "ts-node .",
+    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "prettify": "npx prettier --write .",
+    "format": "npx prettier --write . && npx eslint . --ext .js,.jsx,.ts,.tsx --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Weetz/overflowbridge.git"
+  },
+  "author": "will2022",
+  "license": "CC BY-NC-SA 4.0",
+  "bugs": {
+    "url": "https://github.com/will2022/overflowbridge/issues"
+  },
+  "homepage": "https://github.com/will2022/overflowbridge#readme",
+  "dependencies": {
+    "@discordjs/rest": "^1.0.1",
+    "@types/node-fetch": "^2.6.2",
+    "discord-api-types": "^0.36.3",
+    "discord.js": "^14.3.0",
+    "minecraft-protocol": "^1.36.1",
+    "node-fetch": "^2.6.7",
+    "prismarine-chat": "^1.6.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.7.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "2.7.1"
+  }
+}
