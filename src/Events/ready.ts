@@ -177,49 +177,53 @@ export default {
                         compactChat.send(escapeString(message));
                     }
                 }
-                console.log(jsonMsg.translate);
-                if (jsonMsg.translate == 'chat.type.announcement' || jsonMsg.translate == 'chat.type.text' || jsonMsg.translate == 'chat.type.emote') {
-                    const username = jsonMsg.with[0].text;
-                    let message = ChatMessage.fromNotch(jsonMsg.with[1]).toString();
-                    if (jsonMsg.translate == 'chat.type.emote' && message.indexOf('- ') == 0) message = message.substring(2, message.length);
+                if (jsonMsg.translate) {
+                    console.log(jsonMsg.translate);
+                    if (jsonMsg.translate == 'chat.type.announcement' || jsonMsg.translate == 'chat.type.text' || jsonMsg.translate == 'chat.type.emote') {
+                        const username = jsonMsg.with[0].text;
+                        let message = ChatMessage.fromNotch(jsonMsg.with[1]).toString();
+                        if (jsonMsg.translate == 'chat.type.emote' && message.indexOf('- ') == 0) message = message.substring(2, message.length);
+        
+                        if (message != 'cat test' && message.indexOf('TPS:') != 0 && username === minecraft.client.username) return;
+                        if (message === '') return;
+                        if (username == 'uptime_check' && message == 'chat test') minecraft.client.write('chat', { message: 'cat test' });
+                        
+                        const data = { 'username': username, 'content': message, 'avatar_url': `https://mc-heads.net/avatar/${username}`, 'allowed_mentions': { 'parse': [] } };
+                        await fetch(`https://discord.com/api/webhooks/${config.discord.webhook.id}/${config.discord.webhook.token}`, {
+                            method: 'POST',
+                            body: JSON.stringify(data),
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
+                            },
+                        });
     
-                    if (message != 'cat test' && message.indexOf('TPS:') != 0 && username === minecraft.client.username) return;
-                    if (message === '') return;
-                    if (username == 'uptime_check' && message == 'chat test') minecraft.client.write('chat', { message: 'cat test' });
-                    
-                    const data = { 'username': username, 'content': message, 'avatar_url': `https://mc-heads.net/avatar/${username}`, 'allowed_mentions': { 'parse': [] } };
-                    await fetch(`https://discord.com/api/webhooks/${config.discord.webhook.id}/${config.discord.webhook.token}`, {
-                        method: 'POST',
-                        body: JSON.stringify(data),
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
-                        },
-                    });
-
-                    if (message.match(/^(.{3,32}#\d{4}: |)tps$/)) minecraft.requestTps();
-                } else if (jsonMsg.translate == 'chat.type.advancement.task' || jsonMsg.translate == 'chat.type.advancement.challenge' || jsonMsg.translate == 'chat.type.advancement.goal') {
-                    const channel = await guild.channels.fetch(config.discord.channels.advancements) as TextChannel;
-                    const message = ChatMessage.fromNotch(jsonMsg).toString();
-    
-                    channel.send(escapeString(message));
-                } else if (jsonMsg.translate == 'multiplayer.player.joined' || jsonMsg.translate == 'multiplayer.player.left') {
-                    const channel = await guild.channels.fetch(config.discord.channels.joinsAndLeaves) as TextChannel;
-                    const status = jsonMsg.translate.replace('multiplayer.player.', '');
-                    const username = jsonMsg.with[0].text;
-                    if (username === minecraft.client.username) channel.send({
-                        'content': `I'm back online ||<@${config.discord.ownerId}>||`,
-                        'allowedMentions': { users: [ config.discord.ownerId ] },
-                    });
-    
-                    channel.send('```diff\n' + `${status == 'left' ? '-' : '+'} ${username}` + '\n```');
-                } else if (jsonMsg.translate == 'commands.message.display.incoming') {
-                    console.log(packet.message);
-                } else if (jsonMsg.translate.indexOf('death.') != -1) {
-                    const channel = await guild.channels.fetch(config.discord.channels.deathMessages) as TextChannel;
-                    const message = ChatMessage.fromNotch(jsonMsg).toString();
-    
-                    channel.send(escapeString(message));
+                        if (message.match(/^(.{3,32}#\d{4}: |)tps$/)) minecraft.requestTps();
+                    } else if (jsonMsg.translate == 'chat.type.advancement.task' || jsonMsg.translate == 'chat.type.advancement.challenge' || jsonMsg.translate == 'chat.type.advancement.goal') {
+                        const channel = await guild.channels.fetch(config.discord.channels.advancements) as TextChannel;
+                        const message = ChatMessage.fromNotch(jsonMsg).toString();
+        
+                        channel.send(escapeString(message));
+                    } else if (jsonMsg.translate == 'multiplayer.player.joined' || jsonMsg.translate == 'multiplayer.player.left') {
+                        const channel = await guild.channels.fetch(config.discord.channels.joinsAndLeaves) as TextChannel;
+                        const status = jsonMsg.translate.replace('multiplayer.player.', '');
+                        const username = jsonMsg.with[0].text;
+                        if (username === minecraft.client.username) channel.send({
+                            'content': `I'm back online ||<@${config.discord.ownerId}>||`,
+                            'allowedMentions': { users: [ config.discord.ownerId ] },
+                        });
+        
+                        channel.send('```diff\n' + `${status == 'left' ? '-' : '+'} ${username}` + '\n```');
+                    } else if (jsonMsg.translate == 'commands.message.display.incoming') {
+                        console.log(packet.message);
+                    } else if (jsonMsg.translate.indexOf('death.') != -1) {
+                        const channel = await guild.channels.fetch(config.discord.channels.deathMessages) as TextChannel;
+                        const message = ChatMessage.fromNotch(jsonMsg).toString();
+        
+                        channel.send(escapeString(message));
+                    } else {
+                        console.log(packet.message);
+                    }
                 } else {
                     console.log(packet.message);
                 }
