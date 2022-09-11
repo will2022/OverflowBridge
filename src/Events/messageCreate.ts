@@ -23,6 +23,7 @@ export default {
             let sent = false;
             const confirmSent = (packet: any) => {
                 const jsonMsg = JSON.parse(packet.message);
+                if (jsonMsg.with == undefined) return;
                 const msg = jsonMsg.with[1];
                 if (msg == undefined) return;
 
